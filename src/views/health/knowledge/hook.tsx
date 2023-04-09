@@ -1,13 +1,11 @@
 import { getHealthKnowledgeList } from "@/api/health";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { type PaginationProps } from "@pureadmin/table";
-import { reactive, ref, computed, onMounted, onBeforeMount } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 
 export function healthKnowledge() {
-  const route = useRoute();
   const router = useRouter();
-  const id = route.query?.id ? route.query?.id : route.params?.id;
   const form = reactive({
     title: "",
     creator_name: "",
@@ -99,11 +97,40 @@ export function healthKnowledge() {
   });
   function handleDetail(row) {
     console.log(row);
-    toDetail(row.id);
+    useMultiTagsStoreHook().handleTags("push", {
+      path: `/health/knowledge/detail`,
+      name: "KnowledgeDetail",
+      query: { id: String(row.id), title: String(row.title) },
+      meta: {
+        title: `养生知识详情信息 - ${row.title}`,
+        // 最大打开标签数
+        dynamicLevel: 5
+      }
+    });
+    // 路由跳转
+    router.push({
+      name: "KnowledgeDetail",
+      query: { id: String(row.id), title: String(row.title) }
+    });
   }
 
   function handleUpdate(row) {
     console.log(row);
+    useMultiTagsStoreHook().handleTags("push", {
+      path: `/health/knowledge/edit`,
+      name: "KnowledgeEdit",
+      query: { id: String(row.id), title: String(row.title) },
+      meta: {
+        title: `养生知识编辑 - ${row.title}`,
+        // 最大打开标签数
+        dynamicLevel: 5
+      }
+    });
+    // 路由跳转
+    router.push({
+      name: "KnowledgeEdit",
+      query: { id: String(row.id), title: String(row.title) }
+    });
   }
 
   function handleDelete(row) {
@@ -146,40 +173,17 @@ export function healthKnowledge() {
     onSearch();
   };
 
-  function toDetail(id) {
-    useMultiTagsStoreHook().handleTags("push", {
-      path: `/health/knowledge/detail`,
-      name: "KnowledgeDetail",
-      query: { id: String(id) },
-      meta: {
-        title: `养生知识详情信息 - ${id}`,
-        // 最大打开标签数
-        dynamicLevel: 5
-      }
-    });
-    // 路由跳转
-    router.push({ name: "KnowledgeDetail", query: { id: String(id) } });
-  }
-
-  function initToDetail() {
-    onBeforeMount(() => {
-      if (id) toDetail(id);
-    });
-  }
-
   onMounted(() => {
     onSearch();
   });
 
   return {
-    id,
     form,
     loading,
     columns,
     dataList,
     pagination,
     buttonClass,
-    initToDetail,
     onSearch,
     resetForm,
     handleDetail,
@@ -190,78 +194,3 @@ export function healthKnowledge() {
     handleSelectionChange
   };
 }
-
-export function healthKnowledgeDetail() {
-  const { pkg, lastBuildTime } = __APP_INFO__;
-  const { version } = pkg;
-  const columns = [
-    {
-      label: "版本",
-      cellRenderer: () => {
-        return <el-tag size="small">{version}</el-tag>;
-      }
-    },
-    {
-      label: "最后编译时间",
-      cellRenderer: () => {
-        return <el-tag size="small">{lastBuildTime}</el-tag>;
-      }
-    },
-    {
-      label: "文档地址",
-      cellRenderer: () => {
-        return (
-          <a
-            href="https://yiming_chang.gitee.io/pure-admin-doc"
-            target="_blank"
-          >
-            <span style="color: var(--el-color-primary)">文档地址</span>
-          </a>
-        );
-      }
-    },
-    {
-      label: "预览地址",
-      cellRenderer: () => {
-        return (
-          <a
-            href="https://yiming_chang.gitee.io/vue-pure-admin"
-            target="_blank"
-          >
-            <span style="color: var(--el-color-primary)">预览地址</span>
-          </a>
-        );
-      }
-    },
-    {
-      label: "Github",
-      cellRenderer: () => {
-        return (
-          <a
-            href="https://github.com/pure-admin/vue-pure-admin"
-            target="_blank"
-          >
-            <span style="color: var(--el-color-primary)">Github</span>
-          </a>
-        );
-      }
-    },
-    {
-      label: "QQ交流群",
-      cellRenderer: () => {
-        return (
-          <a href="https://jq.qq.com/?_wv=1027&k=E9fwmFGr" target="_blank">
-            <span style="color: var(--el-color-primary)">
-              点击链接加入群聊【Pure Admin】
-            </span>
-          </a>
-        );
-      }
-    }
-  ];
-
-  return {
-    columns
-  };
-}
-

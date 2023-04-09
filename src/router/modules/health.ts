@@ -17,6 +17,24 @@ export default {
       }
     },
     {
+      path: "/health/knowledge/detail",
+      name: "KnowledgeDetail",
+      component: () => import("@/views/health/knowledge_detail/index.vue"),
+      meta: {
+        title: "养生知识详情",
+        showLink: false
+      }
+    },
+    {
+      path: "/health/knowledge/edit",
+      name: "KnowledgeEdit",
+      component: () => import("@/views/health/knowledge_edit/index.vue"),
+      meta: {
+        title: "养生知识编辑",
+        showLink: false
+      }
+    },
+    {
       path: "/health/news",
       name: "养生新闻",
       component: () => import("@/views/error/404.vue"),

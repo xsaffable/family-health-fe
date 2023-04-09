@@ -16,6 +16,10 @@ type Result = {
 };
 
 /** 获取健康知识列表 */
-export const getHealthKnowledgeList = (data?: object) => {
-  return http.request<PageResult>("get", "/health_knowledge_list", { data });
+export const getHealthKnowledgeList = (params?: object) => {
+  return http.request<PageResult>("get", "/health/knowledge_list", { params });
+};
+
+export const getHealthKnowledgeDetail = (params?: object) => {
+  return http.request<Result>("get", "/health/knowledge_detail", { params });
 };

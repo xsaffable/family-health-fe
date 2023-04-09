@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { healthKnowledgeDetail } from "./hook";
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { onBeforeUnmount, ref, shallowRef, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { getHealthKnowledgeDetail } from "@/api/health";
 
 defineOptions({
   name: "KnowledgeDetail"
@@ -15,11 +16,24 @@ const editorRef = shallowRef();
 // 内容 HTML
 const valueHtml = ref("<p>hello</p>");
 
-// 模拟 ajax 异步获取内容
-onMounted(() => {
+const route = useRoute();
+const loading = ref(true);
+const detail = ref({});
+const id = route.query?.id ? route.query?.id : route.params?.id;
+const title = route.query?.title ? route.query?.title : route.params?.title;
+
+async function init() {
+  loading.value = true;
+  const { data } = await getHealthKnowledgeDetail({ id: id });
+  detail.value = data;
+  valueHtml.value = data.content;
   setTimeout(() => {
-    valueHtml.value = "<p>模拟 Ajax 异步设置内容</p>";
-  }, 1500);
+    loading.value = false;
+  }, 500);
+}
+
+onMounted(() => {
+  init();
 });
 
 const toolbarConfig: any = { excludeKeys: "fullScreen" };
@@ -36,7 +50,26 @@ const handleCreated = editor => {
   editorRef.value = editor; // 记录 editor 实例，重要！
 };
 
-const { title, detail } = healthKnowledgeDetail();
+/**
+ * 提交审核
+ */
+function submit_review() {
+  console.log(id);
+}
+
+/**
+ * 审核通过
+ */
+function pass_review() {
+  console.log(id);
+}
+
+/**
+ * 审核拒绝
+ */
+function reject_review() {
+  console.log(id);
+}
 </script>
 
 <template>
@@ -81,20 +114,12 @@ const { title, detail } = healthKnowledgeDetail();
           <span class="font-medium"> 详细内容 </span>
         </div>
       </template>
-      <div class="wangeditor">
-        <Toolbar
-          style="border-bottom: 1px solid #ccc"
-          :editor="editorRef"
-          :defaultConfig="toolbarConfig"
-          :mode="mode"
-        />
-        <Editor
-          style="height: 500px; overflow-y: hidden"
-          v-model="valueHtml"
-          :defaultConfig="editorConfig"
-          :mode="mode"
-          @onCreated="handleCreated"
-        />
+      <div v-html="detail.content" />
+      <el-divider />
+      <div style="float: right; margin-bottom: 20px">
+        <el-button type="primary" @click="submit_review"> 提交审核 </el-button>
+        <el-button type="success" @click="pass_review"> 审核通过 </el-button>
+        <el-button type="danger" @click="reject_review"> 审核拒绝 </el-button>
       </div>
     </el-card>
   </div>

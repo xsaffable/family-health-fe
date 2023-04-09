@@ -11,7 +11,7 @@ export default {
     {
       path: "/health/knowledge",
       name: "养生知识",
-      component: () => import("@/views/error/403.vue"),
+      component: () => import("@/views/health/knowledge/index.vue"),
       meta: {
         title: "养生知识"
       }

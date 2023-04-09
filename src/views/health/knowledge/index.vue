@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRole } from "./hook";
+import { healthKnowledge } from "./hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
-import Database from "@iconify-icons/ri/database-2-line";
-import More from "@iconify-icons/ep/more-filled";
 import Delete from "@iconify-icons/ep/delete";
 import EditPen from "@iconify-icons/ep/edit-pen";
+import InformationLine from "@iconify-icons/ri/information-line";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
-import Menu from "@iconify-icons/ep/menu";
 import AddFill from "@iconify-icons/ri/add-circle-line";
 
 defineOptions({
@@ -24,15 +22,15 @@ const {
   columns,
   dataList,
   pagination,
-  buttonClass,
   onSearch,
   resetForm,
+  handleDetail,
   handleUpdate,
   handleDelete,
   handleSizeChange,
   handleCurrentChange,
   handleSelectionChange
-} = useRole();
+} = healthKnowledge();
 </script>
 
 <template>
@@ -43,31 +41,33 @@ const {
       :model="form"
       class="bg-bg_color w-[99/100] pl-8 pt-4"
     >
-      <el-form-item label="角色名称：" prop="name">
+      <el-form-item label="标题：" prop="title">
         <el-input
-          v-model="form.name"
-          placeholder="请输入角色名称"
+          v-model="form.title"
+          placeholder="请输入标题"
           clearable
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="角色标识：" prop="code">
+      <el-form-item label="创建人：" prop="creator_name">
         <el-input
-          v-model="form.code"
-          placeholder="请输入角色标识"
+          v-model="form.creator_name"
+          placeholder="请输入创建人"
           clearable
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="状态：" prop="status">
+      <el-form-item label="审核状态：" prop="review_status">
         <el-select
-          v-model="form.status"
+          v-model="form.review_status"
           placeholder="请选择状态"
           clearable
           class="!w-[180px]"
         >
-          <el-option label="已开启" value="1" />
-          <el-option label="已关闭" value="0" />
+          <el-option label="未提交" value="1" />
+          <el-option label="审核中" value="2" />
+          <el-option label="审核通过" value="3" />
+          <el-option label="审核拒绝" value="4" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -79,7 +79,11 @@ const {
         >
           搜索
         </el-button>
-        <el-button :icon="useRenderIcon(Refresh)" @click="resetForm(formRef)">
+        <el-button
+          :icon="useRenderIcon(Refresh)"
+          :loading="loading"
+          @click="resetForm(formRef)"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -118,12 +122,22 @@ const {
               link
               type="primary"
               :size="size"
+              :icon="useRenderIcon(InformationLine)"
+              @click="handleDetail(row)"
+            >
+              详情
+            </el-button>
+            <el-button
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
               :icon="useRenderIcon(EditPen)"
               @click="handleUpdate(row)"
             >
               修改
             </el-button>
-            <el-popconfirm title="是否确认删除?">
+            <el-popconfirm title="是否确认删除?" @confirm="handleDelete(row)">
               <template #reference>
                 <el-button
                   class="reset-margin"
@@ -131,48 +145,11 @@ const {
                   type="primary"
                   :size="size"
                   :icon="useRenderIcon(Delete)"
-                  @click="handleDelete(row)"
                 >
                   删除
                 </el-button>
               </template>
             </el-popconfirm>
-            <el-dropdown>
-              <el-button
-                class="ml-3 mt-[2px]"
-                link
-                type="primary"
-                :size="size"
-                :icon="useRenderIcon(More)"
-                @click="handleUpdate(row)"
-              />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon(Menu)"
-                    >
-                      菜单权限
-                    </el-button>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button
-                      :class="buttonClass"
-                      link
-                      type="primary"
-                      :size="size"
-                      :icon="useRenderIcon(Database)"
-                    >
-                      数据权限
-                    </el-button>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
           </template>
         </pure-table>
       </template>

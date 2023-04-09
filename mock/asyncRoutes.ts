@@ -35,6 +35,16 @@ const permissionRouter = {
   ]
 };
 
+const tabsRouter = {
+  path: "/health/knowledge/detail",
+  name: "KnowledgeDetail",
+  meta: {
+    // 不在menu菜单中显示
+    showLink: false,
+    roles: ["admin", "common"]
+  }
+};
+
 export default [
   {
     url: "/getAsyncRoutes",
@@ -42,7 +52,7 @@ export default [
     response: () => {
       return {
         success: true,
-        data: [permissionRouter]
+        data: [permissionRouter, tabsRouter]
       };
     }
   }

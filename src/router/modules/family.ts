@@ -11,7 +11,7 @@ export default {
     {
       path: "/family/picture",
       name: "家庭养生照片",
-      component: () => import("@/views/error/403.vue"),
+      component: () => import("@/views/family/picture.vue"),
       meta: {
         title: "家庭养生照片"
       }

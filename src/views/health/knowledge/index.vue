@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { healthKnowledge } from "./hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import addForm from "./add.vue";
 
 import Delete from "@iconify-icons/ep/delete";
 import EditPen from "@iconify-icons/ep/edit-pen";
@@ -22,8 +23,10 @@ const {
   columns,
   dataList,
   pagination,
+  formDialogVisible,
   onSearch,
   resetForm,
+  handleAdd,
   handleDetail,
   handleUpdate,
   handleDelete,
@@ -91,7 +94,7 @@ const {
 
     <PureTableBar title="养生知识列表" @refresh="onSearch">
       <template #buttons>
-        <el-button type="primary" :icon="useRenderIcon(AddFill)">
+        <el-button type="primary" :icon="useRenderIcon(AddFill)" @click="handleAdd">
           新增养生知识
         </el-button>
       </template>
@@ -154,6 +157,7 @@ const {
         </pure-table>
       </template>
     </PureTableBar>
+    <addForm v-model:visible="formDialogVisible" />
   </div>
 </template>
 

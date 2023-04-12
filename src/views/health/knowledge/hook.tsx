@@ -13,6 +13,7 @@ export function healthKnowledge() {
   });
   const dataList = ref([]);
   const loading = ref(true);
+  const formDialogVisible = ref(false);
   const pagination = reactive<PaginationProps>({
     total: 0,
     pageSize: 10,
@@ -95,6 +96,10 @@ export function healthKnowledge() {
       "dark:hover:!text-primary"
     ];
   });
+  function handleAdd() {
+    formDialogVisible.value = true;
+  }
+
   function handleDetail(row) {
     console.log(row);
     useMultiTagsStoreHook().handleTags("push", {
@@ -184,8 +189,10 @@ export function healthKnowledge() {
     dataList,
     pagination,
     buttonClass,
+    formDialogVisible,
     onSearch,
     resetForm,
+    handleAdd,
     handleDetail,
     handleUpdate,
     handleDelete,

@@ -73,7 +73,7 @@ function reject_review() {
 </script>
 
 <template>
-  <div>
+  <div style="margin-bottom: 100px !important">
     <el-card class="box-card m-4" shadow="never">
       <template #header>
         <div class="card-header">

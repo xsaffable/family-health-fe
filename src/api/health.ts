@@ -20,6 +20,17 @@ export const getHealthKnowledgeList = (params?: object) => {
   return http.request<PageResult>("get", "/health/knowledge_list", { params });
 };
 
+/** 获取健康知识详情 */
 export const getHealthKnowledgeDetail = (params?: object) => {
   return http.request<Result>("get", "/health/knowledge_detail", { params });
+};
+
+/** 获取健康新闻列表 */
+export const getHealthNewsList = (params?: object) => {
+  return http.request<PageResult>("get", "/health/news_list", { params });
+};
+
+/** 获取健康新闻详情 */
+export const getHealthNewsDetail = (params?: object) => {
+  return http.request<Result>("get", "/health/news_detail", { params });
 };

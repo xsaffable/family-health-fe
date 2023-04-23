@@ -37,9 +37,27 @@ export default {
     {
       path: "/health/news",
       name: "养生新闻",
-      component: () => import("@/views/error/404.vue"),
+      component: () => import("@/views/health/news/index.vue"),
       meta: {
         title: "养生新闻"
+      }
+    },
+    {
+      path: "/health/news/detail",
+      name: "NewsDetail",
+      component: () => import("@/views/health/news_detail/index.vue"),
+      meta: {
+        title: "养生新闻详情",
+        showLink: false
+      }
+    },
+    {
+      path: "/health/news/edit",
+      name: "NewsEdit",
+      component: () => import("@/views/health/news_edit/index.vue"),
+      meta: {
+        title: "养生新闻编辑",
+        showLink: false
       }
     },
     {

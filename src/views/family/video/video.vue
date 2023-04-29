@@ -6,8 +6,6 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import addForm from "./add.vue";
 
 import Delete from "@iconify-icons/ep/delete";
-import EditPen from "@iconify-icons/ep/edit-pen";
-import InformationLine from "@iconify-icons/ri/information-line";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
 import AddFill from "@iconify-icons/ri/add-circle-line";
@@ -27,8 +25,6 @@ const {
   onSearch,
   resetForm,
   handleAdd,
-  handleDetail,
-  handleUpdate,
   handleDelete,
   handleSizeChange,
   handleCurrentChange,
@@ -60,19 +56,6 @@ const {
           class="!w-[180px]"
         />
       </el-form-item>
-      <el-form-item label="审核状态：" prop="review_status">
-        <el-select
-          v-model="form.review_status"
-          placeholder="请选择状态"
-          clearable
-          class="!w-[180px]"
-        >
-          <el-option label="未提交" value="1" />
-          <el-option label="审核中" value="2" />
-          <el-option label="审核通过" value="3" />
-          <el-option label="审核拒绝" value="4" />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -92,10 +75,10 @@ const {
       </el-form-item>
     </el-form>
 
-    <PureTableBar title="养生知识列表" @refresh="onSearch">
+    <PureTableBar title="养生视频列表" @refresh="onSearch">
       <template #buttons>
         <el-button type="primary" :icon="useRenderIcon(AddFill)" @click="handleAdd">
-          新增养生知识
+          上传养生视频
         </el-button>
       </template>
       <template v-slot="{ size, checkList }">
@@ -120,26 +103,6 @@ const {
           @current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
-            <el-button
-              class="reset-margin"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(InformationLine)"
-              @click="handleDetail(row)"
-            >
-              详情
-            </el-button>
-            <el-button
-              class="reset-margin"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(EditPen)"
-              @click="handleUpdate(row)"
-            >
-              修改
-            </el-button>
             <el-popconfirm title="是否确认删除?" @confirm="handleDelete(row)">
               <template #reference>
                 <el-button
@@ -154,12 +117,9 @@ const {
               </template>
             </el-popconfirm>
           </template>
-          <template #video>
+          <template #video="{ row, index }">
             <video width="180" height="180" controls>
-              <source
-                src="https://yiming_chang.gitee.io/pure-admin-doc/video/url.mov"
-                type="video/mp4"
-              />
+              <source :src="row.video_url" type="video/mp4" />
             </video>
           </template>
         </pure-table>

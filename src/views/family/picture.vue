@@ -72,7 +72,7 @@ const onCurrentChange = (current: number) => {
 const handleDeleteItem = product => {
   ElMessageBox.confirm(
     product
-      ? `确认删除后${product.name}的所有产品信息将被清空, 且无法恢复`
+      ? `确认删除后【${product.name}】的所有信息将被清空, 且无法恢复`
       : "",
     "提示",
     {

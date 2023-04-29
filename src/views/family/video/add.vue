@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { message } from "@/utils/message";
 import { FormInstance } from "element-plus";
+import { UploadFilled } from "@element-plus/icons-vue";
 
 const props = defineProps({
   visible: {
@@ -65,14 +66,14 @@ watch(
 );
 
 const rules = {
-  title: [{ required: true, message: "请输入养生知识标题", trigger: "blur" }]
+  title: [{ required: true, message: "请输入养生视频标题", trigger: "blur" }]
 };
 </script>
 
 <template>
   <el-dialog
     v-model="formVisible"
-    title="新建养生知识"
+    title="上传家庭养生视频"
     :width="680"
     draggable
     :before-close="closeDialog"
@@ -88,8 +89,19 @@ const rules = {
         <el-input
           v-model="formData.title"
           :style="{ width: '480px' }"
-          placeholder="请输入养生知识标题"
+          placeholder="请输入养生视频标题"
         />
+      </el-form-item>
+      <el-form-item>
+        <el-upload
+          class="upload-demo"
+          drag
+          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          multiple
+        >
+          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+          <div class="el-upload__text">拖动文件上传 或者 <em>点击上传</em></div>
+        </el-upload>
       </el-form-item>
     </el-form>
     <template #footer>

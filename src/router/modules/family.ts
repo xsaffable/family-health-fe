@@ -19,7 +19,7 @@ export default {
     {
       path: "/family/video",
       name: "家庭养生视频",
-      component: () => import("@/views/error/404.vue"),
+      component: () => import("@/views/family/video/video.vue"),
       meta: {
         title: "家庭养生视频"
       }
@@ -38,14 +38,6 @@ export default {
       component: () => import("@/views/error/500.vue"),
       meta: {
         title: "家庭寄语"
-      }
-    },
-    {
-      path: "/family/info_record",
-      name: "家庭信息记录",
-      component: () => import("@/views/error/500.vue"),
-      meta: {
-        title: "家庭信息记录"
       }
     },
     {

@@ -65,7 +65,8 @@ export default {
       name: "养生资源",
       component: () => import("@/views/error/500.vue"),
       meta: {
-        title: "养生资源"
+        title: "养生资源",
+        showLink: false
       }
     }
   ]

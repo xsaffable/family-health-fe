@@ -70,13 +70,11 @@ const cardClass = computed(() => [
         </div>
       </el-row>
       <p class="list-card-item_detail--name text-text_color_primary">
-<!--        {{ product.name }}-->
-        这是一个示例标题
+        {{ product.name }}
       </p>
       <p class="list-card-item_detail--desc text-text_color_regular">
-<!--        {{ product.description }}-->
-        <p>这是一个示例描述</p>
-        <p>创建时间: 2023-04-01 10:05:10</p>
+        {{ product.description }}
+        <p>创建时间: {{ product.create_time }}</p>
       </p>
     </div>
   </div>

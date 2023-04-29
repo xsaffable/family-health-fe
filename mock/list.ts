@@ -14,9 +14,9 @@ export default [
               isSetup: true,
               type: 4,
               banner: "https://tdesign.gtimg.com/tdesign-pro/cloud-server.jpg",
-              name: "SSL证书",
-              description:
-                "SSL证书又叫服务器证书，腾讯云为您提供证书的一站式服务，包括免费、付费证书的申请、管理及部"
+              name: "这是一个示例标题",
+              description: "这是一个示例描述",
+              create_time: "2023-04-23 10:00:10"
             },
             {
               index: 2,

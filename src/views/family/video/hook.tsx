@@ -1,11 +1,9 @@
 import { getHealthKnowledgeList } from "@/api/health";
-import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { useRouter } from "vue-router";
 import { type PaginationProps } from "@pureadmin/table";
 import { reactive, ref, computed, onMounted } from "vue";
 
 export function healthKnowledge() {
-  const router = useRouter();
   const form = reactive({
     title: "",
     creator_name: "",
@@ -73,44 +71,6 @@ export function healthKnowledge() {
     formDialogVisible.value = true;
   }
 
-  function handleDetail(row) {
-    console.log(row);
-    useMultiTagsStoreHook().handleTags("push", {
-      path: `/health/knowledge/detail`,
-      name: "KnowledgeDetail",
-      query: { id: String(row.id), title: String(row.title) },
-      meta: {
-        title: `养生知识详情信息 - ${row.title}`,
-        // 最大打开标签数
-        dynamicLevel: 5
-      }
-    });
-    // 路由跳转
-    router.push({
-      name: "KnowledgeDetail",
-      query: { id: String(row.id), title: String(row.title) }
-    });
-  }
-
-  function handleUpdate(row) {
-    console.log(row);
-    useMultiTagsStoreHook().handleTags("push", {
-      path: `/health/knowledge/edit`,
-      name: "KnowledgeEdit",
-      query: { id: String(row.id), title: String(row.title) },
-      meta: {
-        title: `养生知识编辑 - ${row.title}`,
-        // 最大打开标签数
-        dynamicLevel: 5
-      }
-    });
-    // 路由跳转
-    router.push({
-      name: "KnowledgeEdit",
-      query: { id: String(row.id), title: String(row.title) }
-    });
-  }
-
   function handleDelete(row) {
     loading.value = true;
     console.log(row);
@@ -166,8 +126,6 @@ export function healthKnowledge() {
     onSearch,
     resetForm,
     handleAdd,
-    handleDetail,
-    handleUpdate,
     handleDelete,
     handleSizeChange,
     handleCurrentChange,

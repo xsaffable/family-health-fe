@@ -27,7 +27,7 @@ export default {
     {
       path: "/family/diary",
       name: "家庭日记",
-      component: () => import("@/views/error/500.vue"),
+      component: () => import("@/views/family/diary/index.vue"),
       meta: {
         title: "家庭日记"
       }
@@ -35,7 +35,7 @@ export default {
     {
       path: "/family/send_word",
       name: "家庭寄语",
-      component: () => import("@/views/error/500.vue"),
+      component: () => import("@/views/family/send_word/index.vue"),
       meta: {
         title: "家庭寄语"
       }
@@ -43,7 +43,7 @@ export default {
     {
       path: "/family/activity_plan",
       name: "家庭养生活动计划",
-      component: () => import("@/views/error/500.vue"),
+      component: () => import("@/views/family/activity_plan/index.vue"),
       meta: {
         title: "家庭养生活动计划"
       }

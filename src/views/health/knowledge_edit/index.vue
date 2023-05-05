@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import { onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
-import { useRoute } from "vue-router";
-import { getHealthKnowledgeDetail } from "@/api/health";
+import { onBeforeUnmount, onMounted, ref, shallowRef, unref} from "vue";
+import { useRoute, useRouter} from "vue-router";
+import { getHealthKnowledgeDetail, updateHealthKnowledge, approvalHealthKnowledge } from "@/api/health";
+import { message } from "@/utils/message";
+import { getToken } from "@/utils/auth";
 
 defineOptions({
   name: "KnowledgeEdit"
@@ -20,6 +22,7 @@ const toolbarConfig: any = { excludeKeys: "fullScreen" };
 const editorConfig = { placeholder: "请输入内容..." };
 
 const route = useRoute();
+const router = useRouter();
 const loading = ref(true);
 const detail = ref({});
 const id = route.query?.id ? route.query?.id : route.params?.id;
@@ -29,7 +32,7 @@ async function init() {
   loading.value = true;
   const { data } = await getHealthKnowledgeDetail({ id: id });
   detail.value = data;
-  valueHtml.value = data.content;
+  valueHtml.value = data.content || '';
   setTimeout(() => {
     loading.value = false;
   }, 500);
@@ -50,33 +53,52 @@ const handleCreated = editor => {
   editorRef.value = editor; // 记录 editor 实例，重要！
 };
 
+/** 刷新路由 */
+function onFresh() {
+  const { fullPath, query } = unref(route);
+  router.replace({
+    path: "/redirect" + fullPath,
+    query: query
+  });
+}
+
 /**
  * 保存内容
  */
 function save() {
   const editor_content = editorRef.value.getHtml();
-  console.log(editor_content);
+  updateHealthKnowledge({ id: id, content: editor_content });
+  message("保存成功", { type: "success" });
 }
 
 /**
  * 提交审核
  */
 function submit_review() {
-  console.log(id);
+  const token = getToken();
+  approvalHealthKnowledge({ id: id, approval: 2, user_id: token.user_id });
+  message("操作成功", { type: "success" });
+  onFresh();
 }
 
 /**
  * 审核通过
  */
 function pass_review() {
-  console.log(id);
+  const token = getToken();
+  approvalHealthKnowledge({ id: id, approval: 3, user_id: token.user_id });
+  message("操作成功", { type: "success" });
+  onFresh();
 }
 
 /**
  * 审核拒绝
  */
 function reject_review() {
-  console.log(id);
+  const token = getToken();
+  approvalHealthKnowledge({ id: id, approval: 4, user_id: token.user_id });
+  message("操作成功", { type: "success" });
+  onFresh();
 }
 </script>
 

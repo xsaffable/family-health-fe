@@ -10,7 +10,9 @@ export default [
         return {
           success: true,
           data: {
+            user_id: 1,
             username: "admin",
+            nickname: "苏新飞",
             // 一个用户可能有多个角色
             roles: ["admin"],
             accessToken: "eyJhbGciOiJIUzUxMiJ9.admin",

@@ -1,4 +1,4 @@
-import { getHealthKnowledgeList } from "@/api/health";
+import { deleteHealthKnowledge, getHealthKnowledgeList} from "@/api/health";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { useRouter } from "vue-router";
 import { type PaginationProps } from "@pureadmin/table";
@@ -8,8 +8,9 @@ export function healthKnowledge() {
   const router = useRouter();
   const form = reactive({
     title: "",
-    creator_name: "",
-    review_status: ""
+    review_status: "",
+    page: null,
+    limit: null
   });
   const dataList = ref([]);
   const loading = ref(true);
@@ -120,7 +121,6 @@ export function healthKnowledge() {
   }
 
   function handleUpdate(row) {
-    console.log(row);
     useMultiTagsStoreHook().handleTags("push", {
       path: `/health/knowledge/edit`,
       name: "KnowledgeEdit",
@@ -140,19 +140,25 @@ export function healthKnowledge() {
 
   function handleDelete(row) {
     loading.value = true;
-    console.log(row);
-    dataList.value = dataList.value.filter(item => item.id !== row.id);
+    deleteHealthKnowledge(row);
     setTimeout(() => {
       loading.value = false;
     }, 500);
+    onSearch();
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    if (val && !val.id) {
+      pagination.pageSize = val;
+    }
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    if (val && !val.id) {
+      pagination.currentPage = val;
+    }
+    onSearch();
   }
 
   function handleSelectionChange(val) {
@@ -161,6 +167,8 @@ export function healthKnowledge() {
 
   async function onSearch() {
     loading.value = true;
+    form.page = pagination.currentPage;
+    form.limit = pagination.pageSize;
     const { data } = await getHealthKnowledgeList(form);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -172,7 +180,6 @@ export function healthKnowledge() {
   const resetForm = formEl => {
     if (!formEl) return;
     form.title = "";
-    form.creator_name = "";
     form.review_status = "";
     formEl.resetFields();
     onSearch();

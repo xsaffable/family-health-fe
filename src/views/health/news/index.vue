@@ -52,14 +52,6 @@ const {
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="创建人：" prop="creator_name">
-        <el-input
-          v-model="form.creator_name"
-          placeholder="请输入创建人"
-          clearable
-          class="!w-[180px]"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -131,19 +123,16 @@ const {
             >
               修改
             </el-button>
-            <el-popconfirm title="是否确认删除?" @confirm="handleDelete(row)">
-              <template #reference>
-                <el-button
-                  class="reset-margin"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon(Delete)"
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-popconfirm>
+            <el-button
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon(Delete)"
+              @click="handleDelete(row)"
+            >
+              删除
+            </el-button>
           </template>
         </pure-table>
       </template>

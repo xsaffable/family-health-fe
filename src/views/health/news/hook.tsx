@@ -1,4 +1,4 @@
-import { getHealthNewsList } from "@/api/health";
+import { deleteHealthNews, getHealthNewsList } from "@/api/health";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { useRouter } from "vue-router";
 import { type PaginationProps } from "@pureadmin/table";
@@ -8,7 +8,8 @@ export function healthNews() {
   const router = useRouter();
   const form = reactive({
     title: "",
-    creator_name: ""
+    page: null,
+    limit: null
   });
   const dataList = ref([]);
   const loading = ref(true);
@@ -39,7 +40,7 @@ export function healthNews() {
     },
     {
       label: "描述",
-      prop: "description",
+      prop: "remark",
       minWidth: 200
     },
     {
@@ -97,7 +98,6 @@ export function healthNews() {
   }
 
   function handleUpdate(row) {
-    console.log(row);
     useMultiTagsStoreHook().handleTags("push", {
       path: `/health/news/edit`,
       name: "NewsEdit",
@@ -117,19 +117,25 @@ export function healthNews() {
 
   function handleDelete(row) {
     loading.value = true;
-    console.log(row);
-    dataList.value = dataList.value.filter(item => item.id !== row.id);
+    deleteHealthNews(row);
     setTimeout(() => {
       loading.value = false;
     }, 500);
+    onSearch();
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    if (val && !val.id) {
+      pagination.pageSize = val;
+    }
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    if (val && !val.id) {
+      pagination.currentPage = val;
+    }
+    onSearch();
   }
 
   function handleSelectionChange(val) {
@@ -138,6 +144,8 @@ export function healthNews() {
 
   async function onSearch() {
     loading.value = true;
+    form.page = pagination.currentPage;
+    form.limit = pagination.pageSize;
     const { data } = await getHealthNewsList(form);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -149,7 +157,6 @@ export function healthNews() {
   const resetForm = formEl => {
     if (!formEl) return;
     form.title = "";
-    form.creator_name = "";
     formEl.resetFields();
     onSearch();
   };

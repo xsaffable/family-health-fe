@@ -3,7 +3,7 @@ import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { onBeforeUnmount, ref, shallowRef, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { getHealthKnowledgeDetail } from "@/api/health";
+import { getHealthNewsDetail } from "@/api/health";
 
 defineOptions({
   name: "NewsDetail"
@@ -24,9 +24,9 @@ const title = route.query?.title ? route.query?.title : route.params?.title;
 
 async function init() {
   loading.value = true;
-  const { data } = await getHealthKnowledgeDetail({ id: id });
+  const { data } = await getHealthNewsDetail({ id: id });
   detail.value = data;
-  valueHtml.value = data.content;
+  valueHtml.value = data.content || "";
   setTimeout(() => {
     loading.value = false;
   }, 500);
@@ -77,7 +77,7 @@ const handleCreated = editor => {
         </el-descriptions-item>
         <el-descriptions-item label="描述" label-align="left" align="left">
           <span style="color: var(--el-color-primary)">{{
-            detail.description
+            detail.remark
           }}</span>
         </el-descriptions-item>
       </el-descriptions>

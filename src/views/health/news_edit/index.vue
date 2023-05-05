@@ -3,8 +3,8 @@ import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
 import { useRoute } from "vue-router";
-import { getHealthNewsDetail } from "@/api/health";
-import {message} from "@/utils/message";
+import { getHealthNewsDetail, updateHealthNews } from "@/api/health";
+import { message } from "@/utils/message";
 
 defineOptions({
   name: "NewsEdit"
@@ -30,7 +30,7 @@ async function init() {
   loading.value = true;
   const { data } = await getHealthNewsDetail({ id: id });
   detail.value = data;
-  valueHtml.value = data.content;
+  valueHtml.value = data.content || "";
   setTimeout(() => {
     loading.value = false;
   }, 500);
@@ -56,7 +56,7 @@ const handleCreated = editor => {
  */
 function save() {
   const editor_content = editorRef.value.getHtml();
-  console.log(editor_content);
+  updateHealthNews({ id: id, content: editor_content });
   message("保存成功", { type: "success" });
 }
 </script>
@@ -87,7 +87,7 @@ function save() {
         </el-descriptions-item>
         <el-descriptions-item label="描述" label-align="left" align="left">
           <span style="color: var(--el-color-primary)">{{
-            detail.description
+            detail.remark
           }}</span>
         </el-descriptions-item>
       </el-descriptions>

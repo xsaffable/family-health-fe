@@ -155,6 +155,15 @@ class PureHttp {
     param?: AxiosRequestConfig,
     axiosConfig?: PureHttpRequestConfig
   ): Promise<T> {
+    if (url != '/getAsyncRoutes' && getToken()) {
+      const token = getToken();
+      if (param.params) {
+        param.params.user_id = token.user_id || '';
+      }
+      if (param.data) {
+        param.data.user_id = token.user_id || '';
+      }
+    }
     const config = {
       method,
       url,

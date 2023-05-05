@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, unref, watch } from "vue";
 import { message } from "@/utils/message";
 import { FormInstance } from "element-plus";
+import { addHealthNews } from "@/api/health";
+import { useTags } from "@/layout/hooks/useTag";
 
 const props = defineProps({
   visible: {
@@ -16,19 +18,31 @@ const props = defineProps({
   }
 });
 
+const { route, router } = useTags();
+
 const ruleFormRef = ref<FormInstance>();
 
 const formVisible = ref(false);
 const formData = ref(props.data);
 
+/** 刷新路由 */
+function onFresh() {
+  const { fullPath, query } = unref(route);
+  router.replace({
+    path: "/redirect" + fullPath,
+    query: query
+  });
+}
+
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(valid => {
     if (valid) {
-      console.log(formData.value);
+      addHealthNews(formData.value);
       message("提交成功", { type: "success" });
       formVisible.value = false;
       resetForm(formEl);
+      onFresh();
     }
   });
 };
@@ -95,7 +109,7 @@ const rules = {
       <el-form-item label="描述" prop="description">
         <el-input
           type="textarea"
-          v-model="formData.description"
+          v-model="formData.remark"
           :style="{ width: '480px' }"
           placeholder="请输入养生新闻描述"
         />

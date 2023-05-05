@@ -20,7 +20,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["manage-product", "delete-item"]);
-const img_url = "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg";
 
 const handleClickManage = (product: CardProductType) => {
   emit("manage-product", product);
@@ -43,8 +42,8 @@ const cardClass = computed(() => [
       <el-row justify="space-between">
         <div>
           <el-image style="width: 200px;!important;"
-                    :src="img_url" :fit="fill"
-                    :preview-src-list="[img_url]" lazy />
+                    :src="product.url" :fit="fill"
+                    :preview-src-list="[product.url]" lazy />
         </div>
         <div class="list-card-item_detail--operation">
           <el-tag
@@ -52,13 +51,13 @@ const cardClass = computed(() => [
             effect="dark"
             class="mx-1 list-card-item_detail--operation--tag"
           >
-            {{ product.isSetup ? "泡温泉" : "按摩" }}
+            {{ product.category_name }}
           </el-tag>
           <el-dropdown trigger="click">
             <IconifyIconOffline :icon="More2Fill" class="text-[24px]" />
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="handleClickManage(product)" :disabled="!product.isSetup">
+                <el-dropdown-item @click="handleClickManage(product)">
                   编辑
                 </el-dropdown-item>
                 <el-dropdown-item @click="handleClickDelete(product)">
@@ -70,10 +69,10 @@ const cardClass = computed(() => [
         </div>
       </el-row>
       <p class="list-card-item_detail--name text-text_color_primary">
-        {{ product.name }}
+        {{ product.title }}
       </p>
       <p class="list-card-item_detail--desc text-text_color_regular">
-        {{ product.description }}
+        {{ product.remark }}
         <p>创建时间: {{ product.create_time }}</p>
       </p>
     </div>

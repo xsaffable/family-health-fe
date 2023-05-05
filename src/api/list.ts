@@ -9,6 +9,26 @@ type Result = {
 };
 
 /** 卡片列表 */
-export const getCardList = (data?: object) => {
-  return http.request<Result>("post", "/getCardList", { data });
+export const getCardList = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/picture/list",
+    { params }
+  );
+};
+
+export const addFamilyPicture = (data?: object) => {
+  return http.request<Result>(
+    "post",
+    "http://localhost:8081/family/picture/add",
+    { data }
+  );
+};
+
+export const updateFamilyPicture = (data?: object) => {
+  return http.request<Result>(
+    "post",
+    "http://localhost:8081/family/picture/update",
+    { data }
+  );
 };

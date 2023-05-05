@@ -25,21 +25,22 @@ const svg = `
       `;
 
 const INITIAL_DATA = {
-  name: "",
-  status: "",
-  description: "",
-  type: "",
-  mark: ""
+  title: "",
+  remark: "",
+  category: ""
 };
 
 const pagination = ref({ current: 1, pageSize: 12, total: 0 });
 
 const productList = ref([]);
 const dataLoading = ref(true);
+const formDialogVisible = ref(false);
+const formData = ref({ ...INITIAL_DATA });
+const searchData = ref({});
 
 const getCardListData = async () => {
   try {
-    const { data } = await getCardList();
+    const { data } = await getCardList({ category: searchData.value.type });
     productList.value = data.list;
     pagination.value = {
       ...pagination.value,
@@ -57,10 +58,6 @@ const getCardListData = async () => {
 onMounted(() => {
   getCardListData();
 });
-
-const formDialogVisible = ref(false);
-const formData = ref({ ...INITIAL_DATA });
-const searchValue = ref("");
 
 const onPageSizeChange = (size: number) => {
   pagination.value.pageSize = size;
@@ -81,15 +78,27 @@ const handleDeleteItem = product => {
   )
     .then(() => {
       message("删除成功", { type: "success" });
+      // TODO: 删除
     })
     .catch(() => {});
 };
 const handleManageProduct = product => {
   formDialogVisible.value = true;
   nextTick(() => {
-    formData.value = { ...product, status: product?.isSetup ? "1" : "0" };
+    formData.value = { ...product, is_add: 0 };
   });
 };
+
+const searchChange = value => {
+  getCardListData();
+};
+
+const SELECT_OPTIONS = [
+  { label: "泡温泉", value: 1 },
+  { label: "按摩", value: 2 },
+  { label: "喝茶", value: 3 },
+  { label: "游泳", value: 4 }
+];
 </script>
 
 <template>
@@ -97,25 +106,28 @@ const handleManageProduct = product => {
     <div class="w-full flex justify-between mb-4">
       <el-button
         :icon="useRenderIcon(AddFill)"
-        @click="formDialogVisible = true"
+        @click="
+          formData.is_add = 1;
+          formDialogVisible = true;
+        "
       >
         上传图片
       </el-button>
-      <el-input
-        style="width: 300px"
-        v-model="searchValue"
-        placeholder="请输入图片类别"
+      <el-select
+        v-model="searchData.type"
         clearable
+        :style="{ width: '300px' }"
+        @change="searchChange"
       >
-        <template #suffix>
-          <el-icon class="el-input__icon">
-            <IconifyIconOffline
-              v-show="searchValue.length === 0"
-              :icon="Search"
-            />
-          </el-icon>
-        </template>
-      </el-input>
+        <el-option
+          v-for="(item, index) in SELECT_OPTIONS"
+          :key="index"
+          :value="item.value"
+          :label="item.label"
+        >
+          {{ item.label }}
+        </el-option>
+      </el-select>
     </div>
     <div
       v-loading="dataLoading"
@@ -125,27 +137,19 @@ const handleManageProduct = product => {
       <el-empty
         description="暂无数据"
         v-show="
-          productList
-            .slice(
-              pagination.pageSize * (pagination.current - 1),
-              pagination.pageSize * pagination.current
-            )
-            .filter(v =>
-              v.name.toLowerCase().includes(searchValue.toLowerCase())
-            ).length === 0
+          productList.slice(
+            pagination.pageSize * (pagination.current - 1),
+            pagination.pageSize * pagination.current
+          ).length === 0
         "
       />
       <template v-if="pagination.total > 0">
         <el-row :gutter="16">
           <el-col
-            v-for="(product, index) in productList
-              .slice(
-                pagination.pageSize * (pagination.current - 1),
-                pagination.pageSize * pagination.current
-              )
-              .filter(v =>
-                v.name.toLowerCase().includes(searchValue.toLowerCase())
-              )"
+            v-for="(product, index) in productList.slice(
+              pagination.pageSize * (pagination.current - 1),
+              pagination.pageSize * pagination.current
+            )"
             :key="index"
             :xs="24"
             :sm="12"

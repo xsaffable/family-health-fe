@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Card from "./components/Card.vue";
-import { getCardList } from "@/api/list";
+import {deleteFamilyPicture, getCardList} from "@/api/list";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import { ref, onMounted, nextTick } from "vue";
@@ -69,7 +69,7 @@ const onCurrentChange = (current: number) => {
 const handleDeleteItem = product => {
   ElMessageBox.confirm(
     product
-      ? `确认删除后【${product.name}】的所有信息将被清空, 且无法恢复`
+      ? `确认删除后【${product.title}】的所有信息将被清空, 且无法恢复`
       : "",
     "提示",
     {
@@ -77,8 +77,11 @@ const handleDeleteItem = product => {
     }
   )
     .then(() => {
+      deleteFamilyPicture({ id: product.id });
       message("删除成功", { type: "success" });
-      // TODO: 删除
+      setTimeout(() => {
+        getCardListData();
+      }, 500);
     })
     .catch(() => {});
 };

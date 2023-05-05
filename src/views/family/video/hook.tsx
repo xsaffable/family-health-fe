@@ -1,13 +1,13 @@
-import { getHealthKnowledgeList } from "@/api/health";
 import { useRouter } from "vue-router";
 import { type PaginationProps } from "@pureadmin/table";
 import { reactive, ref, computed, onMounted } from "vue";
+import { deleteFamilyVideoList, getFamilyVideoList } from "@/api/family";
 
 export function healthKnowledge() {
   const form = reactive({
     title: "",
-    creator_name: "",
-    review_status: ""
+    page: null,
+    limit: null
   });
   const dataList = ref([]);
   const loading = ref(true);
@@ -73,7 +73,7 @@ export function healthKnowledge() {
 
   function handleDelete(row) {
     loading.value = true;
-    console.log(row);
+    deleteFamilyVideoList(row);
     dataList.value = dataList.value.filter(item => item.id !== row.id);
     setTimeout(() => {
       loading.value = false;
@@ -81,11 +81,17 @@ export function healthKnowledge() {
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    if (val && !val.id) {
+      pagination.pageSize = val;
+    }
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    if (val && !val.id) {
+      pagination.currentPage = val;
+    }
+    onSearch();
   }
 
   function handleSelectionChange(val) {
@@ -94,7 +100,9 @@ export function healthKnowledge() {
 
   async function onSearch() {
     loading.value = true;
-    const { data } = await getHealthKnowledgeList(form);
+    form.page = pagination.currentPage;
+    form.limit = pagination.pageSize;
+    const { data } = await getFamilyVideoList(form);
     dataList.value = data.list;
     pagination.total = data.total;
     setTimeout(() => {
@@ -105,8 +113,6 @@ export function healthKnowledge() {
   const resetForm = formEl => {
     if (!formEl) return;
     form.title = "";
-    form.creator_name = "";
-    form.review_status = "";
     formEl.resetFields();
     onSearch();
   };

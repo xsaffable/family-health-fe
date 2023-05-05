@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import {ref, unref, watch} from "vue";
 import { message } from "@/utils/message";
-import { FormInstance } from "element-plus";
+import { FormInstance, UploadFile, UploadFiles } from "element-plus";
 import { UploadFilled } from "@element-plus/icons-vue";
+import { addFamilyVideoList } from "@/api/family";
+import {useTags} from "@/layout/hooks/useTag";
 
 const props = defineProps({
   visible: {
@@ -17,21 +19,35 @@ const props = defineProps({
   }
 });
 
+const { route, router } = useTags();
 const ruleFormRef = ref<FormInstance>();
 
 const formVisible = ref(false);
 const formData = ref(props.data);
+const file_url = ref("");
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(valid => {
     if (valid) {
-      message("提交成功", { type: "success" });
+      formData.value.url = file_url.value;
+      addFamilyVideoList(formData.value);
+      message("操作成功", { type: "success" });
       formVisible.value = false;
       resetForm(formEl);
+      onFresh();
     }
   });
 };
+
+/** 刷新路由 */
+function onFresh() {
+  const { fullPath, query } = unref(route);
+  router.replace({
+    path: "/redirect" + fullPath,
+    query: query
+  });
+}
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -68,6 +84,10 @@ watch(
 const rules = {
   title: [{ required: true, message: "请输入养生视频标题", trigger: "blur" }]
 };
+
+const fileUploadSuccess = (response: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+  file_url.value = response.data || "";
+};
 </script>
 
 <template>
@@ -96,8 +116,9 @@ const rules = {
         <el-upload
           class="upload-demo"
           drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          action="http://localhost:8081/file/upload"
           multiple
+          :on-success="fileUploadSuccess"
         >
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
           <div class="el-upload__text">拖动文件上传 或者 <em>点击上传</em></div>

@@ -32,3 +32,11 @@ export const updateFamilyPicture = (data?: object) => {
     { data }
   );
 };
+
+export const deleteFamilyPicture = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/picture/delete",
+    { params }
+  );
+};

@@ -63,7 +63,6 @@ function onFresh() {
 }
 
 const fileUploadSuccess = (response: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
-  console.log(response)
   file_url.value = response.data || "";
 };
 

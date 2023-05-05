@@ -48,14 +48,6 @@ const {
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="创建人：" prop="creator_name">
-        <el-input
-          v-model="form.creator_name"
-          placeholder="请输入创建人"
-          clearable
-          class="!w-[180px]"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -77,7 +69,11 @@ const {
 
     <PureTableBar title="养生视频列表" @refresh="onSearch">
       <template #buttons>
-        <el-button type="primary" :icon="useRenderIcon(AddFill)" @click="handleAdd">
+        <el-button
+          type="primary"
+          :icon="useRenderIcon(AddFill)"
+          @click="handleAdd"
+        >
           上传养生视频
         </el-button>
       </template>
@@ -103,23 +99,20 @@ const {
           @current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
-            <el-popconfirm title="是否确认删除?" @confirm="handleDelete(row)">
-              <template #reference>
-                <el-button
-                  class="reset-margin"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon(Delete)"
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-popconfirm>
+            <el-button
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon(Delete)"
+              @click="handleDelete(row)"
+            >
+              删除
+            </el-button>
           </template>
           <template #video="{ row, index }">
             <video width="180" height="180" controls>
-              <source :src="row.video_url" type="video/mp4" />
+              <source :src="row.url" type="video/mp4" />
             </video>
           </template>
         </pure-table>

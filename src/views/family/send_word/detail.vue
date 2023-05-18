@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { ref, unref, watch } from "vue";
-import { message } from "@/utils/message";
+import { ref, watch } from "vue";
 import { FormInstance } from "element-plus";
-import { addFamilySendWord } from "@/api/family";
-import { useTags } from "@/layout/hooks/useTag";
 
 const props = defineProps({
   visible: {
@@ -18,33 +15,10 @@ const props = defineProps({
   }
 });
 
-const { route, router } = useTags();
 const ruleFormRef = ref<FormInstance>();
 
 const formVisible = ref(false);
 const formData = ref(props.data);
-
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(valid => {
-    if (valid) {
-      addFamilySendWord(formData.value);
-      message("提交成功", { type: "success" });
-      formVisible.value = false;
-      resetForm(formEl);
-      onFresh();
-    }
-  });
-};
-
-/** 刷新路由 */
-function onFresh() {
-  const { fullPath, query } = unref(route);
-  router.replace({
-    path: "/redirect" + fullPath,
-    query: query
-  });
-}
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -86,7 +60,7 @@ const rules = {
 <template>
   <el-dialog
     v-model="formVisible"
-    title="新建家庭寄语"
+    title="家庭日记详情"
     :width="680"
     draggable
     :before-close="closeDialog"
@@ -100,25 +74,19 @@ const rules = {
     >
       <el-form-item label="标题" prop="title">
         <el-input
+          disabled
           v-model="formData.title"
           :style="{ width: '480px' }"
-          placeholder="请输入家庭寄语标题"
         />
       </el-form-item>
       <el-form-item label="内容" prop="content">
         <el-input
+          disabled
           v-model="formData.content"
           :style="{ width: '480px', min_height: '500px' }"
           :type="'textarea'"
-          placeholder="请输入家庭寄语内容"
         />
       </el-form-item>
     </el-form>
-    <template #footer>
-      <el-button @click="closeDialog">取消</el-button>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
-        确定
-      </el-button>
-    </template>
   </el-dialog>
 </template>

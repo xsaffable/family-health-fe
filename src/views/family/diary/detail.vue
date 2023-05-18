@@ -86,7 +86,7 @@ const rules = {
 <template>
   <el-dialog
     v-model="formVisible"
-    title="新建家庭日记"
+    title="家庭日记详情"
     :width="680"
     draggable
     :before-close="closeDialog"
@@ -100,25 +100,19 @@ const rules = {
     >
       <el-form-item label="标题" prop="title">
         <el-input
+          disabled
           v-model="formData.title"
           :style="{ width: '480px' }"
-          placeholder="请输入家庭日记标题"
         />
       </el-form-item>
       <el-form-item label="内容" prop="content">
         <el-input
+          disabled
           v-model="formData.content"
           :style="{ width: '480px', min_height: '500px' }"
           :type="'textarea'"
-          placeholder="请输入家庭日记内容"
         />
       </el-form-item>
     </el-form>
-    <template #footer>
-      <el-button @click="closeDialog">取消</el-button>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
-        确定
-      </el-button>
-    </template>
   </el-dialog>
 </template>

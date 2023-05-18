@@ -2,7 +2,7 @@
 import { ref, unref, watch } from "vue";
 import { message } from "@/utils/message";
 import { FormInstance } from "element-plus";
-import { addFamilyDiary } from "@/api/family";
+import { updateFamilyDiary} from "@/api/family";
 import { useTags } from "@/layout/hooks/useTag";
 
 const props = defineProps({
@@ -28,7 +28,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(valid => {
     if (valid) {
-      addFamilyDiary(formData.value);
+      updateFamilyDiary(formData.value);
       message("提交成功", { type: "success" });
       formVisible.value = false;
       resetForm(formEl);

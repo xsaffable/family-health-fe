@@ -35,8 +35,12 @@ export function useNav() {
     return useUserStoreHook()?.username;
   });
 
+  const nickname = computed(() => {
+    return useUserStoreHook()?.nickname;
+  });
+
   const avatarsStyle = computed(() => {
-    return username.value ? { marginRight: "10px" } : "";
+    return nickname.value ? { marginRight: "10px" } : "";
   });
 
   const isCollapse = computed(() => {
@@ -148,6 +152,7 @@ export function useNav() {
     resolvePath,
     isCollapse,
     pureApp,
+    nickname,
     username,
     avatarsStyle,
     tooltipEffect

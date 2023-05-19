@@ -8,10 +8,14 @@ import { getLogin, refreshTokenApi } from "@/api/user";
 import { UserResult, RefreshTokenResult } from "@/api/user";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth";
+import { message } from "@/utils/message";
 
 export const useUserStore = defineStore({
   id: "pure-user",
   state: (): userType => ({
+    // 用户名
+    nickname:
+      storageSession().getItem<DataInfo<number>>(sessionKey)?.nickname ?? "",
     // 用户名
     username:
       storageSession().getItem<DataInfo<number>>(sessionKey)?.username ?? "",
@@ -19,6 +23,10 @@ export const useUserStore = defineStore({
     roles: storageSession().getItem<DataInfo<number>>(sessionKey)?.roles ?? []
   }),
   actions: {
+    /** 存储用户名 */
+    SET_NICKNAME(nickname: string) {
+      this.nickname = nickname;
+    },
     /** 存储用户名 */
     SET_USERNAME(username: string) {
       this.username = username;
@@ -32,6 +40,10 @@ export const useUserStore = defineStore({
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
+            if (!data.success) {
+              message("用户名/密码不对", { type: "error" });
+              return;
+            }
             if (data) {
               setToken(data.data);
               resolve(data);

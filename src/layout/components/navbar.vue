@@ -14,6 +14,7 @@ const {
   logout,
   onPanel,
   pureApp,
+  nickname,
   username,
   avatarsStyle,
   toggleSideBar
@@ -40,9 +41,9 @@ const {
 
     <div v-if="layout === 'vertical'" class="vertical-header-right">
       <!-- 菜单搜索 -->
-      <Search />
+      <!-- <Search /> -->
       <!-- 通知 -->
-      <Notice id="header-notice" />
+      <!-- <Notice id="header-notice" /> -->
       <!-- 退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">
@@ -50,7 +51,7 @@ const {
             src="https://avatars.githubusercontent.com/u/44761321?v=4"
             :style="avatarsStyle"
           />
-          <p v-if="username" class="dark:text-white">{{ username }}</p>
+          <p v-if="nickname" class="dark:text-white">{{ nickname }}</p>
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">

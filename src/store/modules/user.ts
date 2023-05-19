@@ -40,12 +40,8 @@ export const useUserStore = defineStore({
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (!data.success) {
-              message("用户名/密码不对", { type: "error" });
-              return;
-            }
             if (data) {
-              setToken(data.data);
+              data.data && setToken(data.data);
               resolve(data);
             }
           })

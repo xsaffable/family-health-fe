@@ -51,6 +51,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
               router.push("/");
               message("登录成功", { type: "success" });
             });
+          } else {
+            loading.value = false;
+            message("用户名/密码不对", { type: "error" });
           }
         });
     } else {

@@ -117,11 +117,10 @@ export function healthNews() {
 
   function handleDelete(row) {
     loading.value = true;
-    deleteHealthNews(row);
+    deleteHealthNews(row).then(r => onSearch());
     setTimeout(() => {
       loading.value = false;
     }, 500);
-    onSearch();
   }
 
   function handleSizeChange(val: number) {

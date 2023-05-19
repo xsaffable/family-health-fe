@@ -140,11 +140,10 @@ export function healthKnowledge() {
 
   function handleDelete(row) {
     loading.value = true;
-    deleteHealthKnowledge(row);
+    deleteHealthKnowledge(row).then(r => onSearch());
     setTimeout(() => {
       loading.value = false;
     }, 500);
-    onSearch();
   }
 
   function handleSizeChange(val: number) {

@@ -126,11 +126,10 @@ function handleCurrentChange(val: number) {
 
 function handleDelete(row) {
   loading.value = true;
-  deleteFamilySendWord(row);
+  deleteFamilySendWord(row).then(r => onSearch());
   setTimeout(() => {
     loading.value = false;
   }, 500);
-  onSearch();
 }
 
 async function onSearch() {

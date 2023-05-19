@@ -122,11 +122,10 @@ function handleCurrentChange(val: number) {
 
 function handleDelete(row) {
   loading.value = true;
-  deleteFamilyActivityPlan(row);
+  deleteFamilyActivityPlan(row).then(r => onSearch());
   setTimeout(() => {
     loading.value = false;
   }, 500);
-  onSearch();
 }
 
 async function onSearch() {

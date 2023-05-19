@@ -161,12 +161,42 @@ function reject_review() {
       </div>
       <el-divider />
       <div style="float: left; margin-bottom: 20px">
-        <el-button type="info" @click="save"> 保存 </el-button>
+        <el-button
+          v-show="detail.review_status !== 2"
+          type="info"
+          @click="save"
+        >
+          保存
+        </el-button>
       </div>
       <div style="float: right; margin-bottom: 20px">
-        <el-button type="primary" @click="submit_review"> 提交审核 </el-button>
-        <el-button type="success" @click="pass_review"> 审核通过 </el-button>
-        <el-button type="danger" @click="reject_review"> 审核拒绝 </el-button>
+        <el-button
+          v-show="detail.review_status === 1 || detail.review_status === 4"
+          type="primary"
+          @click="submit_review"
+        >
+          提交审核
+        </el-button>
+        <el-button
+          v-show="
+            (detail.role === 'super_admin' || detail.role === 'admin') &&
+            detail.review_status === 2
+          "
+          type="success"
+          @click="pass_review"
+        >
+          审核通过
+        </el-button>
+        <el-button
+          v-show="
+            (detail.role === 'super_admin' || detail.role === 'admin') &&
+            detail.review_status === 2
+          "
+          type="danger"
+          @click="reject_review"
+        >
+          审核拒绝
+        </el-button>
       </div>
     </el-card>
   </div>

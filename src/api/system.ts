@@ -55,3 +55,19 @@ export const deleteSysUser = (params?: object) => {
     { params }
   );
 };
+
+export const updateSysUser = (data?: object) => {
+  return http.request<Result>(
+    "post",
+    "http://localhost:8081/sys/user/update",
+    { data }
+  );
+};
+
+export const addSysUser = (data?: object) => {
+  return http.request<PageResult>(
+    "post",
+    "http://localhost:8081/sys/user/add",
+    { data }
+  );
+};

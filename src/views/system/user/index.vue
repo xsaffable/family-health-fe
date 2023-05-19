@@ -4,10 +4,14 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { PaginationProps } from "@pureadmin/table";
 import { getSysUserList, deleteSysUser } from "@/api/system";
+import AddFill from "@iconify-icons/ri/add-circle-line";
 
 import Delete from "@iconify-icons/ep/delete";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
+
+import editForm from "./update.vue";
+import addForm from "./add.vue";
 
 defineOptions({
   name: "user_index"
@@ -19,9 +23,18 @@ const form = reactive({
   limit: null
 });
 
+const rowDetail = reactive({
+  id: "",
+  username: "",
+  nickname: "",
+  password: "",
+  role: null
+});
 const formRef = ref();
 const dataList = ref([]);
 const loading = ref(true);
+const formDialogEditVisible = ref(false);
+const formDialogAddVisible = ref(false);
 const pagination = reactive<PaginationProps>({
   total: 0,
   pageSize: 10,
@@ -86,6 +99,19 @@ function handleCurrentChange(val: number) {
     pagination.currentPage = val;
     onSearch();
   }
+}
+
+function handleUpdate(row) {
+  rowDetail.id = row.id;
+  rowDetail.username = row.username;
+  rowDetail.nickname = row.nickname;
+  rowDetail.role = row.role;
+  rowDetail.password = row.password;
+  formDialogEditVisible.value = true;
+}
+
+function handleAdd() {
+  formDialogAddVisible.value = true;
 }
 
 function handleDelete(row) {
@@ -157,6 +183,15 @@ onMounted(() => {
     </el-form>
 
     <PureTableBar title="用户列表" @refresh="onSearch">
+      <template #buttons>
+        <el-button
+          type="primary"
+          :icon="useRenderIcon(AddFill)"
+          @click="handleAdd"
+        >
+          新增用户
+        </el-button>
+      </template>
       <template v-slot="{ size, checkList }">
         <pure-table
           border
@@ -183,6 +218,16 @@ onMounted(() => {
               link
               type="primary"
               :size="size"
+              :icon="useRenderIcon(EditPen)"
+              @click="handleUpdate(row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
               :icon="useRenderIcon(Delete)"
               @click="handleDelete(row)"
             >
@@ -192,6 +237,13 @@ onMounted(() => {
         </pure-table>
       </template>
     </PureTableBar>
+    <editForm
+      v-model:visible="formDialogEditVisible"
+      v-model:data="rowDetail"
+    />
+    <addForm
+      v-model:visible="formDialogAddVisible"
+    />
   </div>
 </template>
 

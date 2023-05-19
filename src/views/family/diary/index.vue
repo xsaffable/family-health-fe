@@ -113,15 +113,15 @@ function handleUpdate(row) {
 function handleSizeChange(val: number) {
   if (val && !val.id) {
     pagination.pageSize = val;
+    onSearch();
   }
-  onSearch();
 }
 
 function handleCurrentChange(val: number) {
   if (val && !val.id) {
     pagination.currentPage = val;
+    onSearch();
   }
-  onSearch();
 }
 
 function handleDelete(row) {

@@ -3,8 +3,9 @@ import { onMounted, reactive, ref } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { PaginationProps } from "@pureadmin/table";
-import { getHealthKnowledgeList } from "@/api/health";
+import { getFamilyActivityPlanList, getFamilyActivityPlanDetail, deleteFamilyActivityPlan } from "@/api/family";
 import addForm from "./add.vue";
+import editForm from "./update.vue";
 import plan from "./plan.vue";
 
 import Delete from "@iconify-icons/ep/delete";
@@ -20,16 +21,19 @@ defineOptions({
 
 const form = reactive({
   title: "",
-  creator_name: "",
-  content: ""
+  page: null,
+  limit: null
 });
 const rowDetail = reactive({
+  id: "",
   title: "",
-  content: ""
+  remark: ""
 });
 const dataList = ref([]);
+const planNodeData = ref({});
 const loading = ref(true);
 const formDialogVisible = ref(false);
+const formDialogEditVisible = ref(false);
 const planDialogVisible = ref(false);
 const pagination = reactive<PaginationProps>({
   total: 0,
@@ -53,16 +57,16 @@ const columns: TableColumnList = [
   {
     label: "标题",
     prop: "title",
-    minWidth: 120
+    minWidth: 100
+  },
+  {
+    label: "描述",
+    prop: "remark",
+    minWidth: 220
   },
   {
     label: "创建人",
     prop: "creator_name",
-    minWidth: 150
-  },
-  {
-    label: "审核人",
-    prop: "reviewer_name",
     minWidth: 100
   },
   {
@@ -71,9 +75,9 @@ const columns: TableColumnList = [
     prop: "create_time"
   },
   {
-    label: "审核时间",
+    label: "更新时间",
     minWidth: 180,
-    prop: "review_time"
+    prop: "update_time"
   },
   {
     label: "操作",
@@ -85,29 +89,51 @@ const columns: TableColumnList = [
 
 function handleAdd() {
   rowDetail.title = "";
-  rowDetail.content = "";
+  rowDetail.remark = "";
   formDialogVisible.value = true;
 }
 
-function handleDetail(row) {
-  rowDetail.title = row.title;
-  rowDetail.content = row.content;
+async function handleDetail(row) {
+  const { data } = await getFamilyActivityPlanDetail({ id: row.id });
+  planNodeData.value = { plan: row, plan_node_list: data };
   planDialogVisible.value = true;
 }
 
 function handleUpdate(row) {
+  rowDetail.id = row.id;
   rowDetail.title = row.title;
-  rowDetail.content = row.content;
-  planDialogVisible.value = true;
+  rowDetail.remark = row.remark;
+  formDialogEditVisible.value = true;
+}
+
+function handleSizeChange(val: number) {
+  if (val && !val.id) {
+    pagination.pageSize = val;
+    onSearch();
+  }
+}
+
+function handleCurrentChange(val: number) {
+  if (val && !val.id) {
+    pagination.currentPage = val;
+    onSearch();
+  }
 }
 
 function handleDelete(row) {
-  console.log("delete");
+  loading.value = true;
+  deleteFamilyActivityPlan(row);
+  setTimeout(() => {
+    loading.value = false;
+  }, 500);
+  onSearch();
 }
 
 async function onSearch() {
   loading.value = true;
-  const { data } = await getHealthKnowledgeList(form);
+  form.page = pagination.currentPage;
+  form.limit = pagination.pageSize;
+  const { data } = await getFamilyActivityPlanList(form);
   dataList.value = data.list;
   pagination.total = data.total;
   setTimeout(() => {
@@ -118,8 +144,6 @@ async function onSearch() {
 const resetForm = formEl => {
   if (!formEl) return;
   form.title = "";
-  form.creator_name = "";
-  form.content = "";
   formEl.resetFields();
   onSearch();
 };
@@ -143,14 +167,6 @@ onMounted(() => {
           placeholder="请输入标题"
           clearable
           class="!w-[200px]"
-        />
-      </el-form-item>
-      <el-form-item label="创建人：" prop="creator_name">
-        <el-input
-          v-model="form.creator_name"
-          placeholder="请输入创建人"
-          clearable
-          class="!w-[180px]"
         />
       </el-form-item>
       <el-form-item>
@@ -199,6 +215,8 @@ onMounted(() => {
             background: 'var(--el-table-row-hover-bg-color)',
             color: 'var(--el-text-color-primary)'
           }"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
             <el-button
@@ -221,25 +239,23 @@ onMounted(() => {
             >
               修改
             </el-button>
-            <el-popconfirm title="是否确认删除?" @confirm="handleDelete(row)">
-              <template #reference>
-                <el-button
-                  class="reset-margin"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon(Delete)"
-                >
-                  删除
-                </el-button>
-              </template>
-            </el-popconfirm>
+            <el-button
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon(Delete)"
+              @click="handleDelete(row)"
+            >
+              删除
+            </el-button>
           </template>
         </pure-table>
       </template>
     </PureTableBar>
     <addForm v-model:visible="formDialogVisible" v-model:data="rowDetail" />
-    <plan v-model:visible="planDialogVisible" v-model:data="rowDetail" />
+    <editForm v-model:visible="formDialogEditVisible" v-model:data="rowDetail" />
+    <plan v-model:visible="planDialogVisible" v-model:data="planNodeData" />
   </div>
 </template>
 

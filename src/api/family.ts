@@ -118,3 +118,83 @@ export const updateFamilySendWord = (data?: object) => {
     { data }
   );
 };
+
+export const getFamilyActivityPlanList = (params?: object) => {
+  return http.request<PageResult>(
+    "get",
+    "http://localhost:8081/family/activity_plan/list",
+    { params }
+  );
+};
+
+export const getFamilyActivityPlanDetail = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/activity_plan/detail",
+    { params }
+  );
+};
+
+export const addFamilyActivityPlan = (data?: object) => {
+  return http.request<PageResult>(
+    "post",
+    "http://localhost:8081/family/activity_plan/add",
+    { data }
+  );
+};
+
+export const deleteFamilyActivityPlan = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/activity_plan/delete",
+    { params }
+  );
+};
+
+export const updateFamilyActivityPlan = (data?: object) => {
+  return http.request<Result>(
+    "post",
+    "http://localhost:8081/family/activity_plan/update",
+    { data }
+  );
+};
+
+export const addFamilyActivityPlanNode = (data?: object) => {
+  return http.request<PageResult>(
+    "post",
+    "http://localhost:8081/family/activity_plan/node/add",
+    { data }
+  );
+};
+
+export const addFamilyActivityPlanActivity = (data?: object) => {
+  return http.request<PageResult>(
+    "post",
+    "http://localhost:8081/family/activity_plan/activity/add",
+    { data }
+  );
+};
+
+export const getFamilyActivityPlanNodeDetail = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/activity_plan/node/detail",
+    { params }
+  );
+};
+
+export const deleteFamilyActivityPlanActivity = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/activity_plan/activity/delete",
+    { params }
+  );
+};
+
+export const deleteFamilyActivityPlanNode = (params?: object) => {
+  return http.request<Result>(
+    "get",
+    "http://localhost:8081/family/activity_plan/node/delete",
+    { params }
+  );
+};

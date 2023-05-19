@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { FormInstance } from "element-plus";
 import addPlan from "./add_plan.vue";
+import planDateNodeDetail from "./plan_date_node_detail.vue";
+import {deleteFamilyActivityPlanNode, getFamilyActivityPlanNodeDetail} from "@/api/family";
 
 const props = defineProps({
   visible: {
@@ -20,6 +22,9 @@ const ruleFormRef = ref<FormInstance>();
 
 const formVisible = ref(false);
 const addDialogVisible = ref(false);
+const detailDialogVisible = ref(false);
+const plan = ref({});
+const planNode = ref({});
 const formData = ref(props.data);
 
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -58,12 +63,25 @@ defineOptions({
   name: "activity_plan"
 });
 
-function handleDelete() {
-  console.log("删除时间节点");
+function handleDelete(plan_node) {
+  deleteFamilyActivityPlanNode({ id: plan_node.id });
+  formData.value.plan_node_list = formData.value.plan_node_list.filter(
+    item => item.id != plan_node.id
+  );
 }
 
-function handleDetail() {
-  console.log("查看时间节点详情");
+async function handleDetail(plan_node) {
+  const { data } = await getFamilyActivityPlanNodeDetail({
+    id: plan_node.id
+  });
+  planNode.value = data;
+  const pic_urls = [];
+  for (const index in data.picture_urls) {
+    pic_urls.push({ name: "", url: data.picture_urls[index] });
+  }
+  planNode.value.pic_urls = pic_urls;
+  console.log(planNode.value);
+  detailDialogVisible.value = true;
 }
 </script>
 
@@ -77,113 +95,41 @@ function handleDetail() {
     <template #header="{ titleId, titleClass }">
       <div class="my-header">
         <h4 :id="titleId" :class="titleClass">养生计划</h4>
-        <el-button type="primary" @click="addDialogVisible = true">
+        <el-button type="primary" @click="plan.id = formData.plan.id; addDialogVisible = true;" v-model:data="formData">
           新增时间节点
         </el-button>
       </div>
     </template>
     <el-timeline>
-      <el-timeline-item timestamp="2018/4/12" placement="top">
+      <el-timeline-item
+        v-for="(plan_node, index) in formData.plan_node_list"
+        :key="index"
+        :timestamp="plan_node.date_node"
+        placement="top"
+      >
         <el-card>
           <template #header>
             <div class="card-header">
-              <span><h4>测试标题</h4></span>
+              <span
+                ><h4>{{ plan_node.title }}</h4></span
+              >
               <span>
-                <el-button class="button" text @click="handleDetail">详情</el-button>
-                <el-button class="button" text @click="handleDelete">删除</el-button>
+                <el-button class="button" text @click="handleDetail(plan_node)"
+                  >详情</el-button
+                >
+                <el-button class="button" text @click="handleDelete(plan_node)"
+                  >删除</el-button
+                >
               </span>
             </div>
           </template>
-          <p>这是一个时间节点的测试描述</p>
-        </el-card>
-      </el-timeline-item>
-      <el-timeline-item timestamp="2018/4/12" placement="top">
-        <el-card>
-          <template #header>
-            <div class="card-header">
-              <span><h4>测试标题</h4></span>
-              <span>
-                <el-button class="button" text>详情</el-button>
-                <el-button class="button" text @click="handleDelete">删除</el-button>
-              </span>
-            </div>
-          </template>
-          <p>这是一个时间节点的测试描述</p>
-        </el-card>
-      </el-timeline-item>
-      <el-timeline-item timestamp="2018/4/12" placement="top">
-        <el-card>
-          <template #header>
-            <div class="card-header">
-              <span><h4>测试标题</h4></span>
-              <span>
-                <el-button class="button" text>详情</el-button>
-                <el-button class="button" text>删除</el-button>
-              </span>
-            </div>
-          </template>
-          <p>这是一个时间节点的测试描述</p>
-        </el-card>
-      </el-timeline-item>
-      <el-timeline-item timestamp="2018/4/12" placement="top">
-        <el-card>
-          <template #header>
-            <div class="card-header">
-              <span><h4>测试标题</h4></span>
-              <span>
-                <el-button class="button" text>详情</el-button>
-                <el-button class="button" text>删除</el-button>
-              </span>
-            </div>
-          </template>
-          <p>这是一个时间节点的测试描述</p>
-        </el-card>
-      </el-timeline-item>
-      <el-timeline-item timestamp="2018/4/12" placement="top">
-        <el-card>
-          <template #header>
-            <div class="card-header">
-              <span><h4>测试标题</h4></span>
-              <span>
-                <el-button class="button" text>详情</el-button>
-                <el-button class="button" text>删除</el-button>
-              </span>
-            </div>
-          </template>
-          <p>这是一个时间节点的测试描述</p>
-        </el-card>
-      </el-timeline-item>
-      <el-timeline-item timestamp="2018/4/3" placement="top">
-        <el-card>
-          <template #header>
-            <div class="card-header">
-              <span><h4>测试标题</h4></span>
-              <span>
-                <el-button class="button" text>详情</el-button>
-                <el-button class="button" text>删除</el-button>
-              </span>
-            </div>
-          </template>
-          <p>这是一个时间节点的测试描述</p>
-        </el-card>
-      </el-timeline-item>
-      <el-timeline-item timestamp="2018/4/2" placement="top">
-        <el-card>
-          <template #header>
-            <div class="card-header">
-              <span><h4>测试标题</h4></span>
-              <span>
-                <el-button class="button" text>详情</el-button>
-                <el-button class="button" text>删除</el-button>
-              </span>
-            </div>
-          </template>
-          <p>这是一个时间节点的测试描述</p>
+          <p>{{ plan_node.remark }}</p>
         </el-card>
       </el-timeline-item>
     </el-timeline>
   </el-dialog>
-  <addPlan v-model:visible="addDialogVisible" />
+  <addPlan v-model:visible="addDialogVisible" v-model:data="plan" />
+  <planDateNodeDetail v-model:visible="detailDialogVisible" v-model:data="planNode" />
 </template>
 
 <style scoped lang="scss">

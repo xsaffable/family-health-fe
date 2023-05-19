@@ -2,7 +2,7 @@
 import {ref, unref, watch} from "vue";
 import { message } from "@/utils/message";
 import { FormInstance } from "element-plus";
-import {addFamilyActivityPlanNode} from "@/api/family";
+import {addFamilyActivityPlan, updateFamilyActivityPlan} from "@/api/family";
 import {useTags} from "@/layout/hooks/useTag";
 
 const props = defineProps({
@@ -28,7 +28,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(valid => {
     if (valid) {
-      addFamilyActivityPlanNode(formData.value);
+      updateFamilyActivityPlan(formData.value);
       message("提交成功", { type: "success" });
       formVisible.value = false;
       resetForm(formEl);
@@ -79,15 +79,14 @@ watch(
 );
 
 const rules = {
-  title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-  date: [{ required: true, message: "请选择时间", trigger: "blur" }]
+  title: [{ required: true, message: "请输入养生计划标题", trigger: "blur" }]
 };
 </script>
 
 <template>
   <el-dialog
     v-model="formVisible"
-    title="新增时间节点"
+    title="新建养生计划"
     :width="680"
     draggable
     :before-close="closeDialog"
@@ -99,19 +98,11 @@ const rules = {
       :rules="rules"
       label-width="100px"
     >
-      <el-form-item label="时间" prop="date">
-        <el-date-picker
-          value-format="YYYY-MM-DD"
-          v-model="formData.date"
-          type="date"
-          placeholder="请选择时间"
-        />
-      </el-form-item>
       <el-form-item label="标题" prop="title">
         <el-input
           v-model="formData.title"
           :style="{ width: '480px' }"
-          placeholder="请输入标题"
+          placeholder="请输入养生计划标题"
         />
       </el-form-item>
       <el-form-item label="描述" prop="remark">
@@ -119,7 +110,7 @@ const rules = {
           v-model="formData.remark"
           :style="{ width: '480px', min_height: '500px' }"
           :type="'textarea'"
-          placeholder="请输入描述"
+          placeholder="请输入养生计划描述"
         />
       </el-form-item>
     </el-form>

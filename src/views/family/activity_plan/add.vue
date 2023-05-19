@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import {ref, unref, watch} from "vue";
 import { message } from "@/utils/message";
 import { FormInstance } from "element-plus";
+import {addFamilyActivityPlan} from "@/api/family";
+import {useTags} from "@/layout/hooks/useTag";
 
 const props = defineProps({
   visible: {
@@ -18,6 +20,7 @@ const props = defineProps({
 
 const ruleFormRef = ref<FormInstance>();
 
+const { route, router } = useTags();
 const formVisible = ref(false);
 const formData = ref(props.data);
 
@@ -25,12 +28,23 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(valid => {
     if (valid) {
+      addFamilyActivityPlan(formData.value);
       message("提交成功", { type: "success" });
       formVisible.value = false;
       resetForm(formEl);
+      onFresh();
     }
   });
 };
+
+/** 刷新路由 */
+function onFresh() {
+  const { fullPath, query } = unref(route);
+  router.replace({
+    path: "/redirect" + fullPath,
+    query: query
+  });
+}
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -91,9 +105,9 @@ const rules = {
           placeholder="请输入养生计划标题"
         />
       </el-form-item>
-      <el-form-item label="描述" prop="description">
+      <el-form-item label="描述" prop="remark">
         <el-input
-          v-model="formData.description"
+          v-model="formData.remark"
           :style="{ width: '480px', min_height: '500px' }"
           :type="'textarea'"
           placeholder="请输入养生计划描述"
